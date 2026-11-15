@@ -67,10 +67,18 @@ class MainActivity : AppCompatActivity() {
         b.btnStop.setOnClickListener { stopServer() }
         b.btnCopy.setOnClickListener { copyUrl() }
         b.btnShare.setOnClickListener { shareUrl() }
+        
+        // --- FIX APPLIED HERE ---
         b.btnHotspot.setOnClickListener {
-            try { startActivity(Intent(Settings.ACTION_TETHER_SETTINGS)) }
-            catch (_: Exception) { startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS)) }
+            val intent = Intent("android.settings.TETHER_SETTINGS")
+            try {
+                this@MainActivity.startActivity(intent)
+            } catch (e: Exception) {
+                this@MainActivity.startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
+            }
         }
+        // ------------------------
+
         b.btnBattery.setOnClickListener { openBatterySettings() }
 
         refreshUi()
