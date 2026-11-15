@@ -68,7 +68,6 @@ class MainActivity : AppCompatActivity() {
         b.btnCopy.setOnClickListener { copyUrl() }
         b.btnShare.setOnClickListener { shareUrl() }
         
-        // --- FIX APPLIED HERE ---
         b.btnHotspot.setOnClickListener {
             val intent = Intent("android.settings.TETHER_SETTINGS")
             try {
@@ -77,8 +76,7 @@ class MainActivity : AppCompatActivity() {
                 this@MainActivity.startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
             }
         }
-        // ------------------------
-
+        
         b.btnBattery.setOnClickListener { openBatterySettings() }
 
         refreshUi()
@@ -145,7 +143,8 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, ServerService::class.java).apply {
             action = ServerService.ACTION_START
             putExtra(ServerService.EXTRA_FOLDER, folder)
-            putExtra(ServerService.EXTRA_PORT, SettingsStore.getPort(this))
+            // FIX: Explicitly use this@MainActivity to pass the Context
+            putExtra(ServerService.EXTRA_PORT, SettingsStore.getPort(this@MainActivity))
         }
         ContextCompat.startForegroundService(this, intent)
     }
