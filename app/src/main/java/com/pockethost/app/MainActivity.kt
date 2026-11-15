@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, ServerService::class.java).apply {
             action = ServerService.ACTION_START
             putExtra(ServerService.EXTRA_FOLDER, folder)
-            putExtra(ServerService.EXTRA_PORT, SettingsStore.getPort(this))
+            putExtra(ServerService.EXTRA_PORT, SettingsStore.getPort(this@MainActivity))
         }
         ContextCompat.startForegroundService(this, intent)
     }
