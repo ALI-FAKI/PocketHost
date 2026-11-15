@@ -1,0 +1,22 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/android:2024.11.1
+    resource_class: medium
+    environment:
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+    steps:
+      - checkout
+      - run:
+          name: Build Debug APK
+          command: gradle assembleDebug --no-daemon --stacktrace
+      - store_artifacts:
+          path: app/build/outputs/apk/debug/app-debug.apk
+          destination: PocketHost-debug.apk
+
+workflows:
+  build-apk:
+    jobs:
+      - build
