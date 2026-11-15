@@ -46,7 +46,8 @@ class ServerService : Service() {
 
     private fun startServerSafely(root: File, port: Int) {
         server?.stop()
-        server = SiteServer(port, root).also { it.start(SOCKET_READ_TIMEOUT, false) }
+        // FIX: Added applicationContext here
+        server = SiteServer(port, root, applicationContext).also { it.start(SOCKET_READ_TIMEOUT, false) }
     }
 
     private fun stopEverything() {
