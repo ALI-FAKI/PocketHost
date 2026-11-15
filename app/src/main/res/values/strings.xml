@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PocketHost</string>
+    <string name="tagline">Run your website from your phone — 24/7, no PC needed.</string>
+
+    <string name="status_running">● Server running</string>
+    <string name="status_stopped">○ Server stopped</string>
+
+    <string name="folder_label">Serving from</string>
+    <string name="no_folder">No folder selected</string>
+    <string name="pick_folder">Pick folder</string>
+
+    <string name="local_url">Local URL — open this on any device on the same network</string>
+    <string name="copy">Copy</string>
+    <string name="share">Share</string>
+
+    <string name="start">Start Server</string>
+    <string name="stop">Stop Server</string>
+
+    <string name="hotspot_on">Hotspot: ON</string>
+    <string name="hotspot_off">Hotspot: OFF</string>
+    <string name="device_ip_zero">Device IP: —</string>
+    <string name="device_ip">Device IP: %1$s</string>
+    <string name="open_hotspot">Open Hotspot Settings</string>
+    <string name="battery_settings">Battery Settings (keep alive)</string>
+
+    <string name="footer_hint">Turn on your hotspot, then have any PC or phone connect to it and open the URL above. The server keeps running in the background — even when the screen is off — thanks to the ongoing notification.</string>
+
+    <string name="notif_channel">Server</string>
+    <string name="notif_title">PocketHost running</string>
+    <string name="notif_text">Serving on port %1$d</string>
+    <string name="notif_stop">Stop</string>
+</resources>
