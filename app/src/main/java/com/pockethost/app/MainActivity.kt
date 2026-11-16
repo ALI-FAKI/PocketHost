@@ -79,7 +79,6 @@ class MainActivity : AppCompatActivity() {
         
         b.btnBattery.setOnClickListener { openBatterySettings() }
 
-        // --- NEW BUTTON LISTENERS ADDED HERE ---
         b.btnViewSite.setOnClickListener {
             val intent = Intent(this, WebViewActivity::class.java).apply {
                 // 127.0.0.1 means "this phone itself"
@@ -96,7 +95,12 @@ class MainActivity : AppCompatActivity() {
             }
             startActivity(intent)
         }
-        // ---------------------------------------
+
+        // --- NEW FILE MANAGER BUTTON LISTENER ---
+        b.btnFileManager.setOnClickListener {
+            startActivity(Intent(this, FileManagerActivity::class.java))
+        }
+        // ----------------------------------------
 
         refreshUi()
     }
