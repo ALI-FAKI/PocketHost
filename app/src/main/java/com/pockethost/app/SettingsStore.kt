@@ -7,6 +7,9 @@ object SettingsStore {
     private const val K_FOLDER = "folder"
     private const val K_PORT = "port"
     private const val K_AUTOSTART = "autostart"
+    
+    // NEW: Key for the Cloudflare Token
+    private const val K_CF_TOKEN = "cf_token"
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
@@ -21,4 +24,9 @@ object SettingsStore {
     fun getAutoStart(ctx: Context): Boolean = prefs(ctx).getBoolean(K_AUTOSTART, true)
     fun setAutoStart(ctx: Context, enabled: Boolean) =
         prefs(ctx).edit().putBoolean(K_AUTOSTART, enabled).apply()
+
+    // NEW: Functions to save and retrieve the Cloudflare Token
+    fun getCfToken(ctx: Context): String? = prefs(ctx).getString(K_CF_TOKEN, "")
+    fun setCfToken(ctx: Context, token: String) =
+        prefs(ctx).edit().putString(K_CF_TOKEN, token).apply()
 }
