@@ -39,10 +39,12 @@ class ServerService : Service() {
                 isRunning = true
                 localUrl = "http://${NetworkUtils.getLocalIpAddress()}:$port"
                 
-                // START SSH TUNNEL
                 publicUrl = "Connecting..."
                 broadcastState()
-                CloudflaredTunnel.start(port)
+                CloudflaredTunnel.start(port) { url ->
+                    publicUrl = url
+                    broadcastState()
+                }
             }
         }
         return START_STICKY
@@ -57,7 +59,6 @@ class ServerService : Service() {
         try { server?.stop() } catch (_: Exception) {}
         server = null
         
-        // STOP SSH TUNNEL
         CloudflaredTunnel.stop()
         
         releaseWakeLock()
@@ -105,7 +106,7 @@ class ServerService : Service() {
             .addAction(0, getString(R.string.notif_stop), stopIntent)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE) 
             .build()
     }
 
