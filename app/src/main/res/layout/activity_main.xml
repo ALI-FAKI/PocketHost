@@ -120,7 +120,6 @@
             android:backgroundTint="#7c3aed"
             android:textColor="#ffffff"
             android:layout_marginTop="8dp" />
-        <!-- --------------------- -->
 
         <Button
             android:id="@+id/btnStart"
