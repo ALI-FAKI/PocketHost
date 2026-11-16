@@ -73,7 +73,7 @@
             app:cornerRadius="12dp"
             android:layout_marginTop="12dp" />
 
-        <!-- URL SECTION -->
+        <!-- LOCAL URL SECTION -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,6 +89,27 @@
             android:text="—"
             android:textColor="@color/url"
             android:textSize="20sp"
+            android:textStyle="bold"
+            android:fontFamily="monospace"
+            android:textIsSelectable="true"
+            android:layout_marginTop="4dp" />
+
+        <!-- PUBLIC URL SECTION (NEW) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Public URL (Cloudflare)"
+            android:textColor="@color/text_dim"
+            android:textSize="12sp"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/tvPublicUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Not running"
+            android:textColor="#3b82f6"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:fontFamily="monospace"
             android:textIsSelectable="true"
@@ -149,7 +170,7 @@
                 android:layout_marginStart="6dp" />
         </LinearLayout>
 
-        <!-- NEW FILE MANAGER BUTTON ADDED HERE -->
+        <!-- FILE MANAGER BUTTON -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnFileManager"
             style="@style/Widget.Material3.Button.TonalButton"
@@ -158,7 +179,6 @@
             android:text="Manage Files"
             app:cornerRadius="12dp"
             android:layout_marginTop="12dp" />
-        <!-- --------------------------------- -->
 
         <View
             android:layout_width="match_parent"
