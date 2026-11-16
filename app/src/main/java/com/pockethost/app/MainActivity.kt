@@ -99,24 +99,14 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, FileManagerActivity::class.java))
         }
 
-        // --- NEW: LONG PRESS TO SAVE CLOUDFLARE TOKEN ---
-        b.tvPublicUrl.setOnLongClickListener {
-            val input = android.widget.EditText(this)
-            input.setText(SettingsStore.getCfToken(this))
-            input.hint = "Paste Cloudflare Tunnel Token (ey...)"
-            android.app.AlertDialog.Builder(this)
-                .setTitle("Cloudflare Token Settings")
-                .setMessage("Paste the token from your Cloudflare Zero Trust Dashboard.")
-                .setView(input)
-                .setPositiveButton("Save") { _, _ ->
-                    SettingsStore.setCfToken(this, input.text.toString().trim())
-                    Toast.makeText(this, "Token Saved! Start server to connect.", Toast.LENGTH_SHORT).show()
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-            true
+        // Tap the Public URL text to instantly copy it
+        b.tvPublicUrl.setOnClickListener {
+            val url = ServerService.publicUrl
+            if (url != null && url.startsWith("https://")) {
+                copyToClipboard(url)
+                Toast.makeText(this, "Public URL copied to clipboard!", Toast.LENGTH_SHORT).show()
+            }
         }
-        // ------------------------------------------------
 
         refreshUi()
     }
@@ -194,24 +184,38 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun copyUrl() {
-        val url = b.tvLocalUrl.text?.toString().orEmpty()
-        if (url.isBlank() || url == "—") return
-        (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager)
-            .setPrimaryClip(ClipData.newPlainText("url", url))
-        Toast.makeText(this, "URL copied", Toast.LENGTH_SHORT).show()
+        val pubUrl = ServerService.publicUrl
+        val localUrl = b.tvLocalUrl.text?.toString().orEmpty()
+        
+        // Prefer the Public URL if it exists
+        val urlToCopy = if (pubUrl != null && pubUrl.startsWith("https://")) pubUrl else localUrl
+
+        if (urlToCopy.isBlank() || urlToCopy == "—") return
+        copyToClipboard(urlToCopy)
+        Toast.makeText(this, "URL copied!", Toast.LENGTH_SHORT).show()
     }
 
     private fun shareUrl() {
-        val url = b.tvLocalUrl.text?.toString().orEmpty()
-        if (url.isBlank() || url == "—") return
+        val pubUrl = ServerService.publicUrl
+        val localUrl = b.tvLocalUrl.text?.toString().orEmpty()
+
+        // Prefer the Public URL if it exists
+        val urlToShare = if (pubUrl != null && pubUrl.startsWith("https://")) pubUrl else localUrl
+
+        if (urlToShare.isBlank() || urlToShare == "—") return
         startActivity(
             Intent.createChooser(
                 Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, url)
+                    putExtra(Intent.EXTRA_TEXT, urlToShare)
                 }, "Share URL"
             )
         )
+    }
+
+    private fun copyToClipboard(text: String) {
+        (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager)
+            .setPrimaryClip(ClipData.newPlainText("url", text))
     }
 
     private fun openBatterySettings() {
@@ -238,7 +242,6 @@ class MainActivity : AppCompatActivity() {
             b.tvStatus.setTextColor(ContextCompat.getColor(this, R.color.status_running))
             b.tvLocalUrl.text = ServerService.localUrl ?: "—"
             
-            // NEW: Update Public URL Text
             val pubUrl = ServerService.publicUrl
             if (pubUrl != null && pubUrl.startsWith("https://")) {
                 b.tvPublicUrl.text = pubUrl
