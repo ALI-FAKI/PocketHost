@@ -10,8 +10,16 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Download Cloudflared Binary
+          command: |
+            mkdir -p app/src/main/jniLibs/arm64-v8a
+            curl -L -o app/src/main/jniLibs/arm64-v8a/libcloudflared.so https://github.com/QudsLab/Cloudflared/raw/main/android/arm64-v8a/libcloudflared.so
+            chmod +x app/src/main/jniLibs/arm64-v8a/libcloudflared.so
+      - run:
           name: Build Debug APK
-          command: gradle assembleDebug --no-daemon --stacktrace
+          command: |
+            chmod +x ./gradlew
+            ./gradlew assembleDebug --no-daemon --stacktrace
       - store_artifacts:
           path: app/build/outputs/apk/debug/app-debug.apk
           destination: PocketHost-debug.apk
