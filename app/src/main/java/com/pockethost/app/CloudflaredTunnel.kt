@@ -1,31 +1,31 @@
 package com.pockethost.app
 
-import android.content.Context
-import java.io.File
-
 object CloudflaredTunnel {
-    private var process: Process? = null
 
-    fun start(context: Context, token: String) {
-        if (process != null) return
+    init {
+        try {
+            System.loadLibrary("cloudflared")
+        } catch (e: UnsatisfiedLinkError) {
+            e.printStackTrace()
+        }
+    }
 
+    private external fun CloudflaredInit()
+    private external fun CloudflaredRun(args: String)
+    private external fun CloudflaredStop()
+
+    fun start(rawToken: String) {
         Thread {
             try {
-                val binary = File(context.applicationInfo.nativeLibraryDir, "libcloudflared.so")
-                if (!binary.exists()) {
-                    return@Thread
+                // Clean the token in case the whole command was pasted
+                var cleanToken = rawToken.trim()
+                if (cleanToken.contains("install ")) {
+                    cleanToken = cleanToken.substringAfter("install ").trim()
                 }
 
-                val pb = ProcessBuilder(
-                    binary.absolutePath,
-                    "tunnel",
-                    "--no-autoupdate",
-                    "run",
-                    "--token",
-                    token
-                )
-                pb.redirectErrorStream(true)
-                process = pb.start()
+                CloudflaredInit()
+                val args = "tunnel --no-autoupdate run --token $cleanToken"
+                CloudflaredRun(args)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -34,8 +34,7 @@ object CloudflaredTunnel {
 
     fun stop() {
         try {
-            process?.destroy()
-            process = null
+            CloudflaredStop()
         } catch (e: Exception) {
             e.printStackTrace()
         }
