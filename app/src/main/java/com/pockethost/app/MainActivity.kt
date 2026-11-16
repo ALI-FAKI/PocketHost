@@ -79,6 +79,25 @@ class MainActivity : AppCompatActivity() {
         
         b.btnBattery.setOnClickListener { openBatterySettings() }
 
+        // --- NEW BUTTON LISTENERS ADDED HERE ---
+        b.btnViewSite.setOnClickListener {
+            val intent = Intent(this, WebViewActivity::class.java).apply {
+                // 127.0.0.1 means "this phone itself"
+                putExtra("url", "http://127.0.0.1:${SettingsStore.getPort(this@MainActivity)}")
+                putExtra("title", "My Website")
+            }
+            startActivity(intent)
+        }
+
+        b.btnViewDashboard.setOnClickListener {
+            val intent = Intent(this, WebViewActivity::class.java).apply {
+                putExtra("url", "http://127.0.0.1:${SettingsStore.getPort(this@MainActivity)}/__host")
+                putExtra("title", "Server Dashboard")
+            }
+            startActivity(intent)
+        }
+        // ---------------------------------------
+
         refreshUi()
     }
 
@@ -143,7 +162,6 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, ServerService::class.java).apply {
             action = ServerService.ACTION_START
             putExtra(ServerService.EXTRA_FOLDER, folder)
-            // FIX: Explicitly use this@MainActivity to pass the Context
             putExtra(ServerService.EXTRA_PORT, SettingsStore.getPort(this@MainActivity))
         }
         ContextCompat.startForegroundService(this, intent)
