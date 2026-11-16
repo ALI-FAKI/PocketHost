@@ -18,6 +18,7 @@
 
     <application
         android:allowBackup="true"
+        android:usesCleartextTraffic="true"  <!-- ADD THIS LINE -->
         android:icon="@drawable/ic_server"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -33,7 +34,6 @@
             </intent-filter>
         </activity>
 
-        <!-- NEW ACTIVITY ADDED HERE -->
         <activity
             android:name=".WebViewActivity"
             android:exported="false"
