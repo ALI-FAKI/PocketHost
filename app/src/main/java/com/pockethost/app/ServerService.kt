@@ -11,18 +11,12 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
-import com.jcraft.jsch.JSch
-import com.jcraft.jsch.Session
-import java.io.BufferedReader
 import java.io.File
-import java.io.InputStreamReader
 
 class ServerService : Service() {
 
     private var server: SiteServer? = null
     private var wakeLock: PowerManager.WakeLock? = null
-    private var tunnelSession: Session? = null
-    private var tunnelThread: Thread? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -44,10 +38,17 @@ class ServerService : Service() {
                 startServerSafely(File(folder), port)
                 isRunning = true
                 localUrl = "http://${NetworkUtils.getLocalIpAddress()}:$port"
-                broadcastState()
                 
-                // START THE PUBLIC TUNNEL
-                startPublicTunnel(port)
+                // START CLOUDFLARE TUNNEL
+                val token = SettingsStore.getCfToken(this) ?: ""
+                if (token.isNotBlank()) {
+                    publicUrl = "Connected via Cloudflare"
+                    CloudflaredTunnel.start(this, token)
+                } else {
+                    publicUrl = "No Token Saved"
+                }
+                
+                broadcastState()
             }
         }
         return START_STICKY
@@ -58,45 +59,12 @@ class ServerService : Service() {
         server = SiteServer(port, root, applicationContext).also { it.start(SOCKET_READ_TIMEOUT, false) }
     }
 
-    // NEW FUNCTION: Connects to localhost.run
-    private fun startPublicTunnel(port: Int) {
-        tunnelThread = Thread {
-            try {
-                val jsch = JSch()
-                val session = jsch.getSession("nokey", "localhost.run", 22)
-                session.setConfig("StrictHostKeyChecking", "no")
-                session.connect(15000)
-                session.setPortForwardingR(80, "localhost", port)
-                tunnelSession = session
-                
-                // Read the stream to get the assigned public URL
-                val inputStream = session.getStreamFromRemote
-                val reader = BufferedReader(InputStreamReader(inputStream))
-                var line: String?
-                while (reader.readLine().also { line = it } != null) {
-                    val l = line ?: continue
-                    if (l.contains("https://")) {
-                        publicUrl = l.substring(l.indexOf("https://")).trim()
-                        broadcastState()
-                        break
-                    }
-                }
-            } catch (e: Exception) {
-                publicUrl = "Tunnel Error"
-                broadcastState()
-            }
-        }
-        tunnelThread?.start()
-    }
-
     private fun stopEverything() {
         try { server?.stop() } catch (_: Exception) {}
         server = null
         
-        // STOP THE TUNNEL
-        try { tunnelSession?.disconnect() } catch (_: Exception) {}
-        tunnelSession = null
-        tunnelThread = null
+        // STOP CLOUDFLARE TUNNEL
+        CloudflaredTunnel.stop()
         
         releaseWakeLock()
         isRunning = false
@@ -181,7 +149,7 @@ class ServerService : Service() {
             private set
         @Volatile var localUrl: String? = null
             private set
-        @Volatile var publicUrl: String? = null // ADDED THIS
+        @Volatile var publicUrl: String? = null
             private set
     }
 }
