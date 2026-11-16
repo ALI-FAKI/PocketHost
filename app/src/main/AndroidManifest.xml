@@ -33,6 +33,12 @@
             </intent-filter>
         </activity>
 
+        <!-- NEW ACTIVITY ADDED HERE -->
+        <activity
+            android:name=".WebViewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketHost" />
+
         <service
             android:name=".ServerService"
             android:exported="false"
