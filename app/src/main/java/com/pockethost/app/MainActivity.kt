@@ -81,7 +81,6 @@ class MainActivity : AppCompatActivity() {
 
         b.btnViewSite.setOnClickListener {
             val intent = Intent(this, WebViewActivity::class.java).apply {
-                // 127.0.0.1 means "this phone itself"
                 putExtra("url", "http://127.0.0.1:${SettingsStore.getPort(this@MainActivity)}")
                 putExtra("title", "My Website")
             }
@@ -96,11 +95,28 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // --- NEW FILE MANAGER BUTTON LISTENER ---
         b.btnFileManager.setOnClickListener {
             startActivity(Intent(this, FileManagerActivity::class.java))
         }
-        // ----------------------------------------
+
+        // --- NEW: LONG PRESS TO SAVE CLOUDFLARE TOKEN ---
+        b.tvPublicUrl.setOnLongClickListener {
+            val input = android.widget.EditText(this)
+            input.setText(SettingsStore.getCfToken(this))
+            input.hint = "Paste Cloudflare Tunnel Token (ey...)"
+            android.app.AlertDialog.Builder(this)
+                .setTitle("Cloudflare Token Settings")
+                .setMessage("Paste the token from your Cloudflare Zero Trust Dashboard.")
+                .setView(input)
+                .setPositiveButton("Save") { _, _ ->
+                    SettingsStore.setCfToken(this, input.text.toString().trim())
+                    Toast.makeText(this, "Token Saved! Start server to connect.", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+            true
+        }
+        // ------------------------------------------------
 
         refreshUi()
     }
@@ -221,6 +237,17 @@ class MainActivity : AppCompatActivity() {
             b.tvStatus.text = getString(R.string.status_running)
             b.tvStatus.setTextColor(ContextCompat.getColor(this, R.color.status_running))
             b.tvLocalUrl.text = ServerService.localUrl ?: "—"
+            
+            // NEW: Update Public URL Text
+            val pubUrl = ServerService.publicUrl
+            if (pubUrl != null && pubUrl.startsWith("https://")) {
+                b.tvPublicUrl.text = pubUrl
+                b.tvPublicUrl.setTextColor(ContextCompat.getColor(this, R.color.url))
+            } else {
+                b.tvPublicUrl.text = pubUrl ?: "Connecting to tunnel..."
+                b.tvPublicUrl.setTextColor(ContextCompat.getColor(this, R.color.text_dim))
+            }
+
             b.btnStart.isEnabled = false
             b.btnStop.isEnabled = true
             b.btnCopy.isEnabled = true
@@ -229,6 +256,9 @@ class MainActivity : AppCompatActivity() {
             b.tvStatus.text = getString(R.string.status_stopped)
             b.tvStatus.setTextColor(ContextCompat.getColor(this, R.color.status_stopped))
             b.tvLocalUrl.text = "—"
+            b.tvPublicUrl.text = "Not running"
+            b.tvPublicUrl.setTextColor(ContextCompat.getColor(this, R.color.text_dim))
+            
             b.btnStart.isEnabled = folder != null
             b.btnStop.isEnabled = false
             b.btnCopy.isEnabled = false
