@@ -39,17 +39,10 @@ class ServerService : Service() {
                 isRunning = true
                 localUrl = "http://${NetworkUtils.getLocalIpAddress()}:$port"
                 
-                // START CLOUDFLARE TUNNEL
-                val token = SettingsStore.getCfToken(this) ?: ""
-                if (token.isNotBlank()) {
-                    publicUrl = "Connecting..."
-                    // Pass 'this' (Context) and the token
-                    CloudflaredTunnel.start(this, token)
-                } else {
-                    publicUrl = "No Token Saved"
-                }
-                
+                // START SSH TUNNEL
+                publicUrl = "Connecting..."
                 broadcastState()
+                CloudflaredTunnel.start(port)
             }
         }
         return START_STICKY
@@ -64,7 +57,7 @@ class ServerService : Service() {
         try { server?.stop() } catch (_: Exception) {}
         server = null
         
-        // STOP CLOUDFLARE TUNNEL
+        // STOP SSH TUNNEL
         CloudflaredTunnel.stop()
         
         releaseWakeLock()
@@ -112,8 +105,7 @@ class ServerService : Service() {
             .addAction(0, getString(R.string.notif_stop), stopIntent)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
-            // FIX: Changed to NotificationCompat.CATEGORY_SERVICE
-            .setCategory(NotificationCompat.CATEGORY_SERVICE) 
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .build()
     }
 
