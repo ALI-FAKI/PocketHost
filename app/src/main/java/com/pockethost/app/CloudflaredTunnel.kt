@@ -9,6 +9,7 @@ import java.io.InputStreamReader
 object CloudflaredTunnel {
     private var process: Process? = null
 
+    // Make sure the signature has Context and String
     fun start(context: Context, rawToken: String) {
         if (process != null) return
 
@@ -36,7 +37,9 @@ object CloudflaredTunnel {
                 val reader = BufferedReader(InputStreamReader(process?.inputStream))
                 var line: String?
                 while (reader.readLine().also { line = it } != null) {
-                    Log.d("Cloudflare", line)
+                    if (line != null) {
+                        Log.d("Cloudflare", line)
+                    }
                 }
             } catch (e: Exception) {
                 Log.e("Cloudflare", "Error starting tunnel", e)
