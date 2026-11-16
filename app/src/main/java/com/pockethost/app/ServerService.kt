@@ -42,10 +42,9 @@ class ServerService : Service() {
                 // START CLOUDFLARE TUNNEL
                 val token = SettingsStore.getCfToken(this) ?: ""
                 if (token.isNotBlank()) {
-                    // Changed text so it doesn't falsely say "Connected"
-                    publicUrl = "Tunnel Running (Check Dashboard)"
-                    // Removed 'this' because the new JNI code doesn't need Context
-                    CloudflaredTunnel.start(token) 
+                    publicUrl = "Connecting..."
+                    // Pass 'this' (Context) and the token
+                    CloudflaredTunnel.start(this, token)
                 } else {
                     publicUrl = "No Token Saved"
                 }
@@ -113,7 +112,8 @@ class ServerService : Service() {
             .addAction(0, getString(R.string.notif_stop), stopIntent)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setCategory(NotificationCategory.CATEGORY_SERVICE)
+            // FIX: Changed to NotificationCompat.CATEGORY_SERVICE
+            .setCategory(NotificationCompat.CATEGORY_SERVICE) 
             .build()
     }
 
