@@ -94,11 +94,11 @@
             android:textIsSelectable="true"
             android:layout_marginTop="4dp" />
 
-        <!-- PUBLIC URL SECTION (NEW) -->
+        <!-- PUBLIC URL SECTION -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Public URL (Cloudflare)"
+            android:text="Public URL (Worldwide)"
             android:textColor="@color/text_dim"
             android:textSize="12sp"
             android:layout_marginTop="16dp" />
