@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg"
@@ -9,14 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="24dp">
 
+        <!-- HEADER -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
             android:textColor="@color/text"
-            android:textSize="26sp"
+            android:textSize="28sp"
             android:textStyle="bold" />
 
         <TextView
@@ -24,17 +26,24 @@
             android:layout_height="wrap_content"
             android:text="@string/tagline"
             android:textColor="@color/text_dim"
-            android:textSize="13sp"
-            android:layout_marginTop="2dp" />
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp" />
+
+        <!-- STATUS SECTION -->
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/status_stopped"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -42,7 +51,7 @@
             android:text="@string/folder_label"
             android:textColor="@color/text_dim"
             android:textSize="12sp"
-            android:layout_marginTop="18dp" />
+            android:layout_marginTop="16dp" />
 
         <TextView
             android:id="@+id/tvFolder"
@@ -50,24 +59,28 @@
             android:layout_height="wrap_content"
             android:text="@string/no_folder"
             android:textColor="@color/text"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:maxLines="2"
-            android:ellipsize="middle" />
+            android:ellipsize="middle"
+            android:layout_marginTop="4dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPickFolder"
+            style="@style/Widget.Material3.Button.TonalButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:text="@string/pick_folder"
-            android:layout_marginTop="8dp" />
+            app:cornerRadius="12dp"
+            android:layout_marginTop="12dp" />
 
+        <!-- URL SECTION -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/local_url"
             android:textColor="@color/text_dim"
             android:textSize="12sp"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="24dp" />
 
         <TextView
             android:id="@+id/tvLocalUrl"
@@ -75,84 +88,107 @@
             android:layout_height="wrap_content"
             android:text="—"
             android:textColor="@color/url"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:fontFamily="monospace"
-            android:textIsSelectable="true" />
+            android:textIsSelectable="true"
+            android:layout_marginTop="4dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="12dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCopy"
+                style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="@string/copy" />
+                android:text="@string/copy"
+                app:cornerRadius="12dp"
+                android:layout_marginEnd="6dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnShare"
+                style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="@string/share" />
+                android:text="@string/share"
+                app:cornerRadius="12dp"
+                android:layout_marginStart="6dp" />
         </LinearLayout>
 
-        <!-- NEW BUTTONS ADDED HERE -->
-        <Button
-            android:id="@+id/btnViewSite"
+        <!-- PREVIEW SECTION -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="👁️ View Website in App"
-            android:backgroundTint="#2563eb"
-            android:textColor="#ffffff"
-            android:layout_marginTop="24dp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
 
-        <Button
-            android:id="@+id/btnViewDashboard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="📊 View Dashboard in App"
-            android:backgroundTint="#7c3aed"
-            android:textColor="#ffffff"
-            android:layout_marginTop="8dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewSite"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="View Website"
+                app:cornerRadius="12dp"
+                android:layout_marginEnd="6dp" />
 
-        <Button
-            android:id="@+id/btnStart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/start"
-            android:backgroundTint="@color/start"
-            android:textColor="#ffffff"
-            android:layout_marginTop="16dp" />
-
-        <Button
-            android:id="@+id/btnStop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/stop"
-            android:backgroundTint="@color/stop"
-            android:textColor="#ffffff"
-            android:layout_marginTop="8dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewDashboard"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Dashboard"
+                app:cornerRadius="12dp"
+                android:layout_marginStart="6dp" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/divider"
             android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="24dp" />
 
+        <!-- PRIMARY CONTROLS -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStart"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/start"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            app:backgroundTint="@color/start"
+            app:cornerRadius="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStop"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/stop"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            app:backgroundTint="@color/stop"
+            app:cornerRadius="12dp"
+            android:layout_marginTop="12dp" />
+
+        <!-- SETTINGS SECTION -->
         <TextView
             android:id="@+id/tvHotspot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/hotspot_off"
             android:textColor="@color/text"
-            android:textSize="13sp" />
+            android:textSize="14sp"
+            android:layout_marginTop="32dp" />
 
         <TextView
             android:id="@+id/tvDeviceIp"
@@ -160,30 +196,44 @@
             android:layout_height="wrap_content"
             android:text="@string/device_ip_zero"
             android:textColor="@color/text_dim"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:layout_marginTop="4dp" />
 
-        <Button
-            android:id="@+id/btnHotspot"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/open_hotspot"
-            android:layout_marginTop="8dp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
 
-        <Button
-            android:id="@+id/btnBattery"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/battery_settings"
-            android:layout_marginTop="8dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnHotspot"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Hotspot"
+                app:cornerRadius="12dp"
+                android:layout_marginEnd="6dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBattery"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Battery"
+                app:cornerRadius="12dp"
+                android:layout_marginStart="6dp" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/footer_hint"
             android:textColor="@color/text_dim"
-            android:textSize="11sp"
-            android:layout_marginTop="24dp" />
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_marginTop="32dp" />
 
     </LinearLayout>
 </ScrollView>
