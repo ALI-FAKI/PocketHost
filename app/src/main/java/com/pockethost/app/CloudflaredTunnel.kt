@@ -10,44 +10,62 @@ import java.io.InputStreamReader
 object CloudflaredTunnel {
     private var session: Session? = null
     private var thread: Thread? = null
+    private var isRunning = false
 
     fun start(port: Int, onUrlFound: (String) -> Unit) {
-        if (session != null) return
+        if (isRunning) return
+        isRunning = true
 
         thread = Thread {
-            try {
-                val jsch = JSch()
-                val newSession = jsch.getSession("nokey", "localhost.run", 22)
-                newSession.setConfig("StrictHostKeyChecking", "no")
-                newSession.connect(15000)
-                
-                newSession.setPortForwardingR(80, "localhost", port)
-                session = newSession
+            while (isRunning) {
+                try {
+                    val jsch = JSch()
+                    val newSession = jsch.getSession("nokey", "localhost.run", 22)
+                    newSession.setConfig("StrictHostKeyChecking", "no")
+                    
+                    // Send keep-alive packets to prevent timeouts
+                    newSession.setServerAliveInterval(60000)
+                    newSession.setServerAliveCountMax(3)
 
-                val channel = newSession.openChannel("shell") as ChannelShell
-                val reader = BufferedReader(InputStreamReader(channel.inputStream))
-                channel.connect()
+                    newSession.connect(15000)
+                    newSession.setPortForwardingR(80, "localhost", port)
+                    session = newSession
 
-                reader.forEachLine { line ->
-                    if (line.contains("https://") && line.contains(".lhr.life")) {
-                        val url = line.substring(line.indexOf("https://")).trim()
-                        onUrlFound(url)
+                    val channel = newSession.openChannel("shell") as ChannelShell
+                    val reader = BufferedReader(InputStreamReader(channel.inputStream))
+                    channel.connect()
+
+                    // This Regex extracts ONLY the clean URL, ignoring all the terminal junk
+                    val urlRegex = Regex("""https://[a-zA-Z0-9]+\.app\.lhr\.life""")
+
+                    reader.forEachLine { line ->
+                        val match = urlRegex.find(line)
+                        if (match != null) {
+                            val cleanUrl = match.value
+                            Log.d("Tunnel", "Success! Clean URL found: $cleanUrl")
+                            onUrlFound(cleanUrl)
+                        }
+                        // We do not log the messy 'line' here anymore to keep logs clean
                     }
-                    Log.d("Tunnel", line)
+                } catch (e: Exception) {
+                    Log.e("Tunnel", "Tunnel error, reconnecting in 5s...", e)
                 }
-            } catch (e: Exception) {
-                Log.e("Tunnel", "Error starting tunnel", e)
+
+                // Clean up before reconnecting
+                try { session?.disconnect() } catch (_: Exception) {}
+                session = null
+
+                if (isRunning) {
+                    Thread.sleep(5000) // Wait 5 seconds before trying again
+                }
             }
         }
         thread?.start()
     }
 
     fun stop() {
-        try {
-            session?.disconnect()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        isRunning = false
+        try { session?.disconnect() } catch (_: Exception) {}
         session = null
         thread = null
     }
